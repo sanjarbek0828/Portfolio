@@ -6,9 +6,11 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { certificates as staticCerts } from "@/lib/portfolio-data";
+import { useLanguage } from "@/components/LanguageProvider";
 
 export function Certificates() {
   const [certificates, setCertificates] = useState(staticCerts);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchCerts = async () => {
@@ -32,10 +34,10 @@ export function Certificates() {
       <div className="container relative z-10 py-24 sm:py-28">
         <ScrollReveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">Sertifikatlar</p>
-            <h2 className="mt-4 max-w-3xl text-balance text-3xl font-black tracking-[-0.055em] text-foreground dark:text-white sm:text-5xl lg:text-6xl">{`Doimiy o'rganish natijalari.`}</h2>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("certificates.label")}</p>
+            <h2 className="mt-4 max-w-3xl text-balance text-3xl font-black tracking-[-0.055em] text-foreground dark:text-white sm:text-5xl lg:text-6xl">{t("certificates.title")}</h2>
           </div>
-          <p className="max-w-sm text-sm leading-6 text-foreground dark:text-white/50">{`Meta, Google, Coursera, Packt va boshqa xalqaro ta'lim platformalaridagi yutuqlar.`}</p>
+          <p className="max-w-sm text-sm leading-6 text-foreground dark:text-white/50">{t("certificates.description")}</p>
         </ScrollReveal>
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

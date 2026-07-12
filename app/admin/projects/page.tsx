@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, serverTimestamp, updateDoc } from "firebase/firestore";
 import {
   BriefcaseBusiness,
   CheckCircle2,
@@ -38,6 +38,7 @@ type ProjectForm = {
   challenge: string;
   solution: string;
   outcomes: string;
+  status: "draft" | "published";
 };
 
 const categories: Array<"Barchasi" | ProjectCategory> = ["Barchasi", "Web ilova", "PWA ilova", "Telegram bot"];
@@ -57,6 +58,7 @@ const emptyForm = (): ProjectForm => ({
   challenge: "",
   solution: "",
   outcomes: "",
+  status: "draft",
 });
 
 const normalizeProject = (data: Partial<Project>, id: string, source: AdminProject["source"]): AdminProject => ({
@@ -77,6 +79,7 @@ const normalizeProject = (data: Partial<Project>, id: string, source: AdminProje
   github: data.github || "",
   live: data.live || "",
   image: data.image || "",
+  status: data.status || "published",
 });
 
 export default function AdminProjects() {
@@ -151,6 +154,7 @@ export default function AdminProjects() {
       challenge: project.challenge,
       solution: project.solution,
       outcomes: project.outcomes.join(", "),
+      status: project.status || "published",
     });
     setImageFile(null);
     setImagePreview(project.image || null);
@@ -202,6 +206,8 @@ export default function AdminProjects() {
         github: form.github.trim(),
         live: form.live.trim(),
         image,
+        status: form.status,
+        updatedAt: serverTimestamp(),
       };
 
       if (editingProject?.source === "firebase") await updateDoc(doc(db, "projects", editingProject.id), payload);
@@ -223,6 +229,16 @@ export default function AdminProjects() {
     }
     if (!window.confirm(`“${project.title}” loyihasini o‘chirmoqchimisiz?`)) return;
     await deleteDoc(doc(db, "projects", project.id));
+    await fetchProjects();
+  };
+
+  const toggleStatus = async (project: AdminProject) => {
+    if (project.source === "local") {
+      setNotice("Lokal loyiha doim e’lon qilingan. Draft oqimi Firebase loyihalari uchun ishlaydi.");
+      return;
+    }
+    const status = project.status === "draft" ? "published" : "draft";
+    await updateDoc(doc(db, "projects", project.id), { status, updatedAt: serverTimestamp() });
     await fetchProjects();
   };
 
@@ -269,7 +285,7 @@ export default function AdminProjects() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#020611]/80 via-transparent to-transparent" />
                 <div className="absolute inset-x-3 top-3 flex items-center justify-between">
                   <span className="rounded-full border border-white/10 bg-[#020611]/65 px-3 py-1.5 text-[0.55rem] font-bold uppercase tracking-[0.13em] text-white/65 backdrop-blur-xl">{project.category}</span>
-                  <span className={`rounded-full px-2.5 py-1.5 text-[0.52rem] font-bold uppercase tracking-[0.12em] backdrop-blur-xl ${project.source === "firebase" ? "bg-emerald-400/15 text-emerald-200" : "bg-amber-300/15 text-amber-100"}`}>{project.source}</span>
+                  <button type="button" onClick={() => toggleStatus(project)} className={`rounded-full px-2.5 py-1.5 text-[0.52rem] font-bold uppercase tracking-[0.12em] backdrop-blur-xl ${project.status === "draft" ? "bg-amber-300/15 text-amber-100" : "bg-emerald-400/15 text-emerald-200"}`}>{project.status === "draft" ? "Draft" : "Published"}</button>
                 </div>
               </div>
               <div className="p-3 pb-2 pt-5">
@@ -327,6 +343,7 @@ export default function AdminProjects() {
                 <Field label="Natijalar" wide><input value={form.outcomes} onChange={(event) => setForm({ ...form, outcomes: event.target.value })} className="admin-input" placeholder="Tezkor UI, Mobil moslashuv, SEO" /></Field>
                 <Field label="GitHub havolasi"><input type="url" value={form.github} onChange={(event) => setForm({ ...form, github: event.target.value })} className="admin-input" /></Field>
                 <Field label="Live demo"><input type="url" value={form.live} onChange={(event) => setForm({ ...form, live: event.target.value })} className="admin-input" /></Field>
+                <Field label="Nashr holati"><select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value as ProjectForm["status"] })} className="admin-input"><option value="draft">Draft — faqat admin</option><option value="published">Published — saytda ko‘rinadi</option></select></Field>
                 <Field label="Rasm URL" wide><input value={form.image} onChange={(event) => { setForm({ ...form, image: event.target.value }); if (!imageFile) setImagePreview(event.target.value || null); }} className="admin-input" placeholder="https://..." /></Field>
 
                 {notice ? <p className="sm:col-span-2 rounded-xl border border-amber-300/15 bg-amber-300/[0.055] px-3.5 py-3 text-xs text-amber-100/70">{notice}</p> : null}

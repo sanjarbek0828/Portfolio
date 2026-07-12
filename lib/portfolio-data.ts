@@ -106,6 +106,9 @@ export type Project = {
   github: string;
   live: string;
   image: string;
+  status?: "draft" | "published";
+  order?: number;
+  updatedAt?: unknown;
 };
 
 export const projects: Project[] = [

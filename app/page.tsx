@@ -1,4 +1,5 @@
-import Image from "next/image";
+"use client";
+
 import {
   ArrowUpRight,
   Braces,
@@ -23,6 +24,12 @@ import { TypewriterName } from "@/components/TypewriterName";
 import { TypewriterRole } from "@/components/TypewriterRole";
 import { Projects } from "@/components/Projects";
 import { Certificates } from "@/components/Certificates";
+import { useLanguage } from "@/components/LanguageProvider";
+import { InteractiveHeroBackground } from "@/components/InteractiveHeroBackground";
+import { GitHubStats } from "@/components/GitHubStats";
+import { ContactForm } from "@/components/ContactForm";
+import { DesktopInteractivePet } from "@/components/DesktopInteractivePet";
+import { trackEvent } from "@/lib/analytics";
 import {
   faq,
   profile,
@@ -43,31 +50,57 @@ const heroStack = [
   { name: "React", mark: "Re", color: "from-cyan-300 to-sky-500" },
   { name: "Tailwind", mark: "Tw", color: "from-cyan-400 to-teal-500" },
 ];
-const heroCapabilities = [
-  { label: "Responsiv web dizayn", icon: MonitorSmartphone },
-  { label: "Full-stack dasturlash", icon: Code2 },
-  { label: "UI/UX implementatsiya", icon: Figma },
-  { label: "Toza va barqaror kod", icon: Braces },
-];
-
 export default function HomePage() {
+  const { t, language } = useLanguage();
+  const heroCapabilities = [
+    { label: t("hero.responsive"), icon: MonitorSmartphone },
+    { label: t("hero.fullstack"), icon: Code2 },
+    { label: t("hero.uiux"), icon: Figma },
+    { label: t("hero.clean"), icon: Braces },
+  ];
+  const localizedStats = stats.map((item, index) => ({ ...item, label: [
+    language === "EN" ? "Years of experience" : language === "RU" ? "Год опыта" : "Yillik tajriba",
+    language === "EN" ? "Completed projects" : language === "RU" ? "Завершенных проектов" : "Tugallangan loyihalar",
+    language === "EN" ? "Happy clients" : language === "RU" ? "Довольных клиентов" : "Xursand mijozlar",
+    language === "EN" ? "Client rating" : language === "RU" ? "Оценка клиентов" : "Mijozlar bahosi",
+  ][index] }));
+  const localizedServices = services.map((service, index) => {
+    const en = [
+      ["Web Development", "Modern, fast and secure web applications built with React, Node.js and other advanced technologies."],
+      ["UI/UX Design", "Clear and attractive interfaces based on Figma, usability principles and modern design systems."],
+      ["Mobile Adaptation", "Responsive experiences optimized for smartphones, tablets and every modern screen size."],
+      ["Backend & API", "Reliable server-side systems, REST APIs and scalable database architecture."],
+    ];
+    const ru = [
+      ["Веб-разработка", "Современные, быстрые и безопасные веб-приложения на React, Node.js и других технологиях."],
+      ["UI/UX дизайн", "Понятные и привлекательные интерфейсы на основе Figma и современных дизайн-систем."],
+      ["Мобильная адаптация", "Адаптивные решения для смартфонов, планшетов и экранов любого размера."],
+      ["Backend и API", "Надежная серверная часть, REST API и масштабируемая архитектура базы данных."],
+    ];
+    const translation = language === "EN" ? en[index] : language === "RU" ? ru[index] : null;
+    return translation ? { ...service, title: translation[0], description: translation[1] } : service;
+  });
+  const localizedFaq = language === "UZ" ? faq : language === "EN" ? [
+    { question: "Which technologies do you use?", answer: "I primarily work with React, TypeScript, Node.js, Tailwind CSS and Firebase, and adapt the stack to each product’s requirements." },
+    { question: "How long does a project take?", answer: "Depending on scope and complexity, a project usually takes between one week and two months. A precise timeline is provided after discovery." },
+    { question: "Do you provide support after launch?", answer: "Yes. Ongoing maintenance, updates and technical support are available under a separate agreement." },
+    { question: "How are payments handled?", answer: "Payments are usually split into two or three milestones, with 30–50% paid before development begins." },
+  ] : [
+    { question: "С какими технологиями вы работаете?", answer: "В основном я использую React, TypeScript, Node.js, Tailwind CSS и Firebase, подбирая стек под задачи продукта." },
+    { question: "Сколько времени занимает проект?", answer: "В зависимости от масштаба и сложности проект занимает от одной недели до двух месяцев." },
+    { question: "Есть ли поддержка после запуска?", answer: "Да. Техническая поддержка, обновления и дальнейшее сопровождение доступны по отдельному соглашению." },
+    { question: "Как проходит оплата?", answer: "Обычно оплата делится на два или три этапа, а 30–50% вносится до начала разработки." },
+  ];
   return (
     <>
       <ScrollProgress />
       <SiteHeader />
+      <DesktopInteractivePet />
 
       <main id="main-content" className="overflow-hidden bg-[#f5f7fb] text-slate-950 dark:bg-[#020611] dark:text-white">
         {/* ── HERO ── */}
         <section id="home" className="relative isolate min-h-screen overflow-hidden">
-          <Image
-            src="/images/hero-anime-bg.png"
-            alt="Anime uslubidagi dasturchi ish xonasida"
-            fill
-            priority
-            quality={96}
-            sizes="100vw"
-            className="-z-20 object-cover object-[62%_center] sm:object-[58%_center] lg:object-center"
-          />
+          <InteractiveHeroBackground />
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(2,6,17,0.94)_0%,rgba(2,6,17,0.82)_28%,rgba(2,6,17,0.2)_55%,rgba(2,6,17,0.02)_100%)] max-lg:bg-[linear-gradient(90deg,rgba(2,6,17,0.92)_0%,rgba(2,6,17,0.7)_58%,rgba(2,6,17,0.24)_100%)]" />
           <div aria-hidden="true" className="absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-[#020611] to-transparent" />
           <div aria-hidden="true" className="absolute left-[4.5%] top-32 h-px w-24 bg-gradient-to-r from-blue-500 to-transparent" />
@@ -76,19 +109,19 @@ export default function HomePage() {
             <ScrollReveal distance={32} className="w-full max-w-[34rem] xl:max-w-[38rem]">
               <div className="flex items-center gap-4 font-mono text-[0.72rem] font-semibold uppercase tracking-[0.45em] text-[#6685ff] sm:text-sm">
                 <span className="h-px w-8 bg-[#6685ff]" />
-                Salom, men
+                {t("hero.greeting")}
               </div>
 
               <TypewriterName firstName="Sanjarbek" lastName="Otabekov" />
 
-              <TypewriterRole roles={["Full-Stack Developer", "UI/UX Designer", "Creative Thinker", "Tech Enthusiast"]} />
+              <TypewriterRole roles={language === "RU" ? ["Full-Stack разработчик", "UI/UX дизайнер", "Креативный инженер", "Tech энтузиаст"] : ["Full-Stack Developer", "UI/UX Designer", "Creative Thinker", "Tech Enthusiast"]} />
               <p className="mt-5 max-w-md text-pretty text-sm leading-7 text-white/70 sm:text-base">
-                Zamonaviy texnologiyalar yordamida tezkor, responsiv va foydalanuvchiga qulay web tajribalar yarataman.
+                {t("hero.description")}
               </p>
               <span className="mt-6 block h-0.5 w-20 bg-[#6685ff] shadow-[0_0_18px_rgba(102,133,255,0.9)]" />
 
               <div className="mt-8">
-                <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.28em] text-[#6685ff]">Tech stack</p>
+                <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.28em] text-[#6685ff]">{t("hero.stack")}</p>
                 <div className="mt-4 flex flex-wrap gap-3">
                   {heroStack.map((technology) => (
                     <div
@@ -103,7 +136,7 @@ export default function HomePage() {
               </div>
 
               <div className="mt-8 hidden sm:block">
-                <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.28em] text-[#6685ff]">Nimalar qilaman</p>
+                <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.28em] text-[#6685ff]">{t("hero.capabilities")}</p>
                 <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
                   {heroCapabilities.map((capability) => {
                     const Icon = capability.icon;
@@ -122,23 +155,28 @@ export default function HomePage() {
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="#contact"
+                  onClick={() => trackEvent("hero_cta", { target: "contact", language })}
                   className="focus-ring group inline-flex h-12 items-center justify-center gap-3 rounded-lg border border-[#6685ff]/70 bg-[#4569ff]/10 px-6 font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#8aa0ff] backdrop-blur-md transition hover:-translate-y-1 hover:bg-[#4569ff] hover:text-white hover:shadow-[0_0_35px_rgba(69,105,255,0.35)]"
                 >
-                  {`Bog'lanish`}
+                  {t("hero.cta")}
                   <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </a>
                 <a
                   href="#projects"
+                  onClick={() => trackEvent("hero_cta", { target: "projects", language })}
                   className="focus-ring inline-flex h-12 items-center justify-center rounded-lg border border-white/10 bg-black/20 px-6 text-xs font-semibold text-white/70 backdrop-blur-md transition hover:-translate-y-1 hover:border-white/25 hover:text-white"
                 >
-                  {`Loyihalarni ko'rish`}
+                  {t("hero.projects")}
                 </a>
               </div>
 
-              <p className="mt-7 flex items-center gap-2 text-[0.65rem] font-medium text-emerald-300/80">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]" />
-                {profile.availability}
-              </p>
+              <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <p className="flex items-center gap-2 text-[0.65rem] font-medium text-emerald-300/80">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]" />
+                  {t("hero.available")}
+                </p>
+                <GitHubStats />
+              </div>
             </ScrollReveal>
           </div>
         </section>
@@ -151,13 +189,13 @@ export default function HomePage() {
           <div className="container relative z-10 py-20 sm:py-28">
             <ScrollReveal className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
               <div>
-                <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">Men haqimda</p>
+                <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("about.label")}</p>
                 <p className="mt-5 max-w-3xl text-balance text-2xl font-semibold leading-snug tracking-[-0.035em] text-foreground dark:text-white/90 sm:text-4xl">
-                  {profile.fullAbout}
+                  {t("about.text", profile.fullAbout)}
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                {stats.map((item) => (
+                {localizedStats.map((item) => (
                   <div key={item.label} className="rounded-3xl border border-black/5 dark:border-white/[0.08] bg-black/5 dark:bg-white/[0.03] p-5 backdrop-blur-md">
                     <p className="text-3xl font-black tracking-[-0.055em] text-foreground dark:text-white sm:text-4xl">{item.value}</p>
                     <p className="mt-2 text-xs leading-5 text-foreground dark:text-white/50">{item.label}</p>
@@ -175,18 +213,18 @@ export default function HomePage() {
           <div className="container relative z-10 py-24 sm:py-28 lg:py-36">
             <ScrollReveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">Xizmatlar</p>
+                <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("services.label")}</p>
                 <h2 className="mt-4 max-w-3xl text-balance text-3xl font-black tracking-[-0.055em] text-foreground dark:text-white sm:text-5xl lg:text-6xl">
-                  {`G'oyadan ishlaydigan mahsulotgacha.`}
+                  {t("services.title")}
                 </h2>
               </div>
               <p className="max-w-sm text-sm leading-6 text-foreground dark:text-white/50">
-                {`Loyiha uchun kerak bo'ladigan barcha asosiy dizayn va texnik yechimlar bir joyda.`}
+                {t("services.description")}
               </p>
             </ScrollReveal>
 
             <div className="mt-14 grid gap-4 md:grid-cols-2">
-              {services.map((service, index) => {
+              {localizedServices.map((service, index) => {
                 const Icon = serviceIcons[index];
                 return (
                   <ScrollReveal key={service.title} delay={index * 0.06}>
@@ -220,10 +258,10 @@ export default function HomePage() {
           <div className="container relative z-10 py-20 sm:py-28">
             <ScrollReveal className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
               <div>
-                <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">Ko&apos;nikmalar</p>
-                <h2 className="mt-4 text-3xl font-black tracking-[-0.055em] text-foreground dark:text-white sm:text-5xl lg:text-6xl">Men foydalanadigan texnologiyalar.</h2>
+                <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("skills.label")}</p>
+                <h2 className="mt-4 text-3xl font-black tracking-[-0.055em] text-foreground dark:text-white sm:text-5xl lg:text-6xl">{t("skills.title")}</h2>
               </div>
-              <p className="max-w-sm text-sm leading-6 text-foreground dark:text-white/50">Frontend, backend, ma&apos;lumotlar bazasi va dizaynni bir butun mahsulotga birlashtiraman.</p>
+              <p className="max-w-sm text-sm leading-6 text-foreground dark:text-white/50">{t("skills.description")}</p>
             </ScrollReveal>
             <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
               {skills.map((skill, index) => (
@@ -253,7 +291,7 @@ export default function HomePage() {
               <ScrollReveal>
                 <div className="rounded-[1.75rem] border border-black/5 dark:border-white/[0.08] bg-black/5 dark:bg-white/[0.025] p-7 backdrop-blur-md sm:p-10">
                   <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary"><GraduationCap className="h-5 w-5" /></span>
-                  <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary mt-10">{`Ta'lim va tajriba`}</p>
+                  <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary mt-10">{t("experience.label")}</p>
                   {timeline.map((item) => (
                     <div key={item.period} className="mt-8 border-l border-primary/35 pl-6">
                       <p className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-primary">{item.period}</p>
@@ -267,8 +305,8 @@ export default function HomePage() {
 
               <ScrollReveal delay={0.08}>
                 <div className="rounded-[1.75rem] border border-black/5 dark:border-white/[0.08] bg-black/5 dark:bg-white/[0.025] p-7 backdrop-blur-md sm:p-10">
-                  <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">Ish jarayoni</p>
-                  <h2 className="mt-4 text-2xl font-black tracking-[-0.05em] text-foreground dark:text-white sm:text-3xl lg:text-4xl">{`G'oyadan tayyor mahsulotgacha.`}</h2>
+                  <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("workflow.label")}</p>
+                  <h2 className="mt-4 text-2xl font-black tracking-[-0.05em] text-foreground dark:text-white sm:text-3xl lg:text-4xl">{t("workflow.title")}</h2>
                   <div className="mt-9 grid gap-3 sm:grid-cols-2">
                     {workflow.map((step) => (
                       <div key={step.number} className="rounded-2xl border border-black/5 dark:border-white/[0.06] bg-black/5 dark:bg-white/[0.02] p-5">
@@ -295,11 +333,11 @@ export default function HomePage() {
                   <div className="relative z-10">
                     <Quote className="h-10 w-10 text-primary" />
                     <blockquote className="mt-10 text-balance text-xl font-semibold leading-snug tracking-[-0.035em] text-foreground dark:text-white sm:text-2xl">
-                      {`\u201cSanjarbek bilan ishlash juda oson kechdi. U bizning talablarimizni tez tushundi va ajoyib veb-ilova yaratib berdi.\u201d`}
+                      “{t("testimonial.quote")}”
                     </blockquote>
                     <div className="mt-10 border-t border-black/5 dark:border-white/10 pt-6">
                       <p className="font-bold text-foreground dark:text-white">T-Mebel</p>
-                      <p className="mt-1 text-xs text-foreground dark:text-white/50">{`Mebel do'koni`}</p>
+                    <p className="mt-1 text-xs text-foreground dark:text-white/50">{t("testimonial.role")}</p>
                     </div>
                   </div>
                 </div>
@@ -309,10 +347,10 @@ export default function HomePage() {
                 <div className="rounded-[1.75rem] border border-black/5 dark:border-white/[0.08] bg-black/5 dark:bg-white/[0.025] p-7 backdrop-blur-md sm:p-10">
                   <div className="flex items-center gap-3">
                     <MessageCircle className="h-5 w-5 text-primary" />
-                    <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{`Ko'p beriladigan savollar`}</p>
+                    <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("faq.label")}</p>
                   </div>
                   <div className="mt-7 divide-y divide-slate-200/80 dark:divide-white/[0.06]">
-                    {faq.map((item, index) => (
+                    {localizedFaq.map((item, index) => (
                       <details key={item.question} className="group py-5" open={index === 0}>
                         <summary className="focus-ring flex cursor-pointer list-none items-center justify-between gap-5 rounded-lg text-base font-bold text-foreground dark:text-white marker:hidden">
                           {item.question}
@@ -337,11 +375,11 @@ export default function HomePage() {
               <div aria-hidden="true" className="absolute -right-20 -top-32 h-96 w-96 rounded-full bg-[#6685ff]/15 blur-[120px]" />
               <div className="relative z-10 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
                 <div>
-                  <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">Keling, gaplashamiz</p>
+                  <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("contact.label")}</p>
                   <h2 className="mt-5 max-w-3xl text-balance text-3xl font-black leading-[0.95] tracking-[-0.06em] text-foreground dark:text-white sm:text-5xl lg:text-7xl">
-                    Yangi loyihani birga boshlaymiz.
+                    {t("contact.title")}
                   </h2>
-                  <p className="mt-6 max-w-xl text-sm leading-7 text-foreground dark:text-white/50">{`Yangi loyiha ustida ishlashga yoki shunchaki fikr almashishga doim tayyorman.`}</p>
+                  <p className="mt-6 max-w-xl text-sm leading-7 text-foreground dark:text-white/50">{t("contact.description")}</p>
                 </div>
                 <div className="lg:justify-self-end">
                   <a
@@ -370,6 +408,9 @@ export default function HomePage() {
                     })}
                   </div>
                 </div>
+                <div className="lg:col-span-2">
+                  <ContactForm />
+                </div>
               </div>
             </ScrollReveal>
           </div>
@@ -378,7 +419,7 @@ export default function HomePage() {
         {/* ── FOOTER ── */}
         <footer className="container flex flex-col gap-3 border-t border-black/5 dark:border-white/[0.06] py-8 text-xs text-foreground dark:text-white/40 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Sanjarbek Otabekov. Barcha huquqlar himoyalangan.</p>
-          <p>{`Next.js, TypeScript va e'tibor bilan yaratildi.`}</p>
+          <p>{t("footer.built")}</p>
         </footer>
       </main>
     </>

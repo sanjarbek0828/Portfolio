@@ -27,8 +27,10 @@ import { projects as staticProjects, type Project } from "@/lib/portfolio-data";
 import { cn } from "@/lib/utils";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/components/LanguageProvider";
+import { trackEvent } from "@/lib/analytics";
 
-const filters = ["Barchasi", "Web ilova", "PWA ilova", "Telegram bot"] as const;
+const filters = ["All", "Web ilova", "PWA ilova", "Telegram bot"] as const;
 type Filter = (typeof filters)[number];
 
 const ProjectCard = forwardRef<
@@ -40,6 +42,7 @@ const ProjectCard = forwardRef<
   }
 >(({ project, index, onOpen }, ref) => {
   const reduceMotion = useReducedMotion();
+  const { t } = useLanguage();
 
   const cardX = useMotionValue(0.5);
   const cardY = useMotionValue(0.5);
@@ -97,6 +100,7 @@ const ProjectCard = forwardRef<
           {project.github && (
             <a
               href={project.github}
+              onClick={() => trackEvent("project_click", { project: project.slug, target: "github" })}
               target="_blank"
               rel="noreferrer"
             aria-label={`${project.title} manba kodini ko‘rish`}
@@ -108,6 +112,7 @@ const ProjectCard = forwardRef<
           {project.live && (
             <a
               href={project.live}
+              onClick={() => trackEvent("project_click", { project: project.slug, target: "live" })}
               target="_blank"
               rel="noreferrer"
             aria-label={`${project.title} loyihasini ochish`}
@@ -148,7 +153,7 @@ const ProjectCard = forwardRef<
           onClick={onOpen}
           className="focus-ring group/link mt-6 inline-flex items-center gap-2 rounded-lg text-sm font-semibold text-foreground transition hover:text-primary"
         >
-          Batafsil ko‘rish
+          {t("projects.details")}
           <ArrowRight className="h-4 w-4 transition-transform group-hover/link:translate-x-1" />
         </button>
       </div>
@@ -165,6 +170,7 @@ function ProjectModal({
   onClose: () => void;
 }) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     closeButtonRef.current?.focus();
@@ -223,16 +229,16 @@ function ProjectModal({
 
         <div className="grid gap-8 p-7 sm:p-10 md:grid-cols-2">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Muammo</p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">{t("projects.problem")}</p>
             <p className="mt-3 text-sm leading-6 text-white/72">{project.challenge}</p>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Yechim</p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">{t("projects.solution")}</p>
             <p className="mt-3 text-sm leading-6 text-white/72">{project.solution}</p>
           </div>
 
           <div className="md:col-span-2">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Asosiy natijalar</p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">{t("projects.outcomes")}</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               {(Array.isArray(project.outcomes) ? project.outcomes : []).map((outcome) => (
                 <div key={outcome} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-xs font-medium text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
@@ -253,15 +259,15 @@ function ProjectModal({
           </div>
 
           <div className="flex flex-col gap-3 border-t border-black/5 dark:border-white/10 pt-6 sm:flex-row md:col-span-2 md:items-center md:justify-between">
-            <p className="text-xs text-white/50">Vazifa: {project.role}</p>
+            <p className="text-xs text-white/50">{t("projects.role")}: {project.role}</p>
             <div className="flex gap-2">
               {project.github ? (
                 <a href={project.github} target="_blank" rel="noreferrer" className="focus-ring inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/[0.08] hover:text-white">
-                  <Github className="h-3.5 w-3.5" /> Manba kodi
+                  <Github className="h-3.5 w-3.5" /> {t("projects.source")}
                 </a>
               ) : null}
               <a href={project.live} target="_blank" rel="noreferrer" className="focus-ring inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#4569ff] to-primary px-4 py-2 text-xs font-bold text-white shadow-lg transition hover:shadow-[0_0_20px_rgba(69,105,255,0.3)]">
-                Loyihani ochish <ArrowUpRight className="h-3.5 w-3.5" />
+                {t("projects.open")} <ArrowUpRight className="h-3.5 w-3.5" />
               </a>
             </div>
           </div>
@@ -272,10 +278,11 @@ function ProjectModal({
 }
 
 export function Projects() {
-  const [activeFilter, setActiveFilter] = useState<Filter>("Barchasi");
+  const [activeFilter, setActiveFilter] = useState<Filter>("All");
   const [query, setQuery] = useState("");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projects, setProjects] = useState<Project[]>(staticProjects);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -285,7 +292,7 @@ export function Projects() {
           const data = snap.docs.map((projectDoc) => ({
             ...projectDoc.data(),
             slug: projectDoc.data().slug || projectDoc.id,
-          } as Project));
+          } as Project)).filter((project) => project.status !== "draft").sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
           setProjects(data);
         }
       } catch (error) {
@@ -297,7 +304,7 @@ export function Projects() {
 
   const filteredProjects = useMemo(
     () => projects.filter((project) => {
-      const matchesFilter = activeFilter === "Barchasi" || project.category === activeFilter;
+      const matchesFilter = activeFilter === "All" || project.category === activeFilter;
       const searchable = `${project.title} ${project.description} ${(Array.isArray(project.stack) ? project.stack : []).join(" ")}`.toLowerCase();
       return matchesFilter && searchable.includes(query.trim().toLowerCase());
     }),
@@ -330,9 +337,9 @@ export function Projects() {
             className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end"
           >
             <SectionHeading
-              eyebrow="Tanlangan loyihalar"
-              title="Natija uchun yaratilgan raqamli mahsulotlar."
-              description="Strategiya, dizayn va muhandislikni birlashtirgan real web ilovalar, PWA platformalar va Telegram botlar."
+              eyebrow={t("projects.eyebrow")}
+              title={t("projects.title")}
+              description={t("projects.description")}
             />
 
             <div
@@ -361,7 +368,7 @@ export function Projects() {
                       transition={{ type: "spring", stiffness: 320, damping: 28 }}
                     />
                   ) : null}
-                  <span className="relative z-10">{filter}</span>
+                  <span className="relative z-10">{filter === "All" ? t("projects.all") : filter}</span>
                 </button>
               ))}
             </div>
@@ -376,13 +383,13 @@ export function Projects() {
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Loyiha yoki texnologiyani qidiring..."
+                placeholder={t("projects.search")}
                 aria-label="Loyihalarni qidirish"
                 className="border-0 bg-transparent pl-11 text-slate-900 placeholder:text-slate-400 shadow-none focus-visible:ring-0 dark:text-white dark:placeholder:text-white/30"
               />
             </div>
             <p className="px-3 pb-2 text-xs text-slate-500 dark:text-white/40 sm:pb-0">
-              <span className="font-bold text-white">{filteredProjects.length}</span> ta loyiha
+              <span className="font-bold text-white">{filteredProjects.length}</span> {t("projects.count")}
             </p>
           </div>
         </ScrollReveal>
@@ -394,7 +401,7 @@ export function Projects() {
                 key={project.title}
                 project={project}
                 index={index}
-                onOpen={() => setSelectedProject(project)}
+                onOpen={() => { trackEvent("project_click", { project: project.slug, target: "case_study" }); setSelectedProject(project); }}
               />
             ))}
           </AnimatePresence>
@@ -402,23 +409,23 @@ export function Projects() {
 
         {filteredProjects.length === 0 ? (
           <div className="mt-10 rounded-[2rem] border border-dashed border-black/5 dark:border-white/10 p-12 text-center">
-            <p className="font-semibold text-white">Mos loyiha topilmadi.</p>
+            <p className="font-semibold text-white">{t("projects.empty")}</p>
             <button
               type="button"
               onClick={() => {
                 setQuery("");
-                setActiveFilter("Barchasi");
+                setActiveFilter("All");
               }}
               className="focus-ring mt-2 rounded-md text-sm font-semibold text-primary"
             >
-              Filtrlarni tozalash
+              {t("projects.clear")}
             </button>
           </div>
         ) : null}
 
         <ScrollReveal className="mt-10 flex justify-center">
           <a href="https://github.com/sanjarbek404" target="_blank" rel="noreferrer" className="focus-ring inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-primary/30 hover:text-slate-950 dark:border-white/10 dark:bg-white/[0.04] dark:text-white/80 dark:hover:bg-white/[0.08] dark:hover:text-white">
-            GitHub’dagi barcha loyihalar <ArrowUpRight className="h-4 w-4" />
+            {t("projects.github")} <ArrowUpRight className="h-4 w-4" />
           </a>
         </ScrollReveal>
       </div>

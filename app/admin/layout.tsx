@@ -12,6 +12,8 @@ import {
   ChevronRight,
   Command,
   LayoutDashboard,
+  MessageSquare,
+  ChartNoAxesCombined,
   Loader2,
   LogOut,
   Menu,
@@ -27,6 +29,8 @@ const navItems = [
   { name: "Dashboard", description: "Umumiy ko‘rinish", href: "/admin", icon: LayoutDashboard },
   { name: "Loyihalar", description: "Portfolio ishlari", href: "/admin/projects", icon: BriefcaseBusiness },
   { name: "Sertifikatlar", description: "Yutuqlar va kurslar", href: "/admin/certificates", icon: Award },
+  { name: "Xabarlar", description: "Kontakt inbox", href: "/admin/messages", icon: MessageSquare },
+  { name: "Analytics", description: "Tashrif va konversiya", href: "/admin/analytics", icon: ChartNoAxesCombined },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

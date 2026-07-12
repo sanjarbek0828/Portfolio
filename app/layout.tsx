@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/components/AuthProvider";
+import { LanguageProvider } from "@/components/LanguageProvider";
+import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 
 import "./globals.css";
 
@@ -106,7 +108,9 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <AuthProvider>
-          <ThemeProvider>
+          <LanguageProvider>
+            <ThemeProvider>
+            <AnalyticsTracker />
             <a
             href="#main-content"
             className="focus-ring fixed left-4 top-4 z-[100] -translate-y-24 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition focus:translate-y-0"
@@ -114,7 +118,8 @@ export default function RootLayout({
             Kontentga o‘tish
           </a>
           {children}
-          </ThemeProvider>
+            </ThemeProvider>
+          </LanguageProvider>
         </AuthProvider>
       </body>
     </html>

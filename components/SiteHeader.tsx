@@ -5,17 +5,19 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Menu, X, Lock } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-
-const navigation = [
-  { label: "Men haqimda", href: "/#about" },
-  { label: "Ko\u2018nikmalar", href: "/#skills" },
-  { label: "Loyihalar", href: "/#projects" },
-  { label: "Tajriba", href: "/#experience" },
-  { label: "Bog\u2018lanish", href: "/#contact" },
-];
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/components/LanguageProvider";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const { t } = useLanguage();
+  const navigation = [
+    { label: t("nav.about"), href: "/#about" },
+    { label: t("nav.skills"), href: "/#skills" },
+    { label: t("nav.projects"), href: "/#projects" },
+    { label: t("nav.experience"), href: "/#experience" },
+    { label: t("nav.contact"), href: "/#contact" },
+  ];
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
@@ -50,6 +52,7 @@ export function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-1.5">
+          <div className="hidden xl:block"><LanguageSwitcher /></div>
           <ThemeToggle />
           <Link
             href="/admin"
@@ -62,7 +65,7 @@ export function SiteHeader() {
             href="/#contact"
             className="focus-ring hidden items-center gap-2 rounded-full border border-white/10 bg-gradient-to-r from-[#4569ff] to-[#657cff] px-4 py-2.5 text-xs font-bold text-white shadow-[0_0_24px_rgba(69,105,255,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_0_34px_rgba(69,105,255,0.45)] sm:flex"
           >
-            {`Bog'lanish`} <ArrowUpRight className="h-3.5 w-3.5" />
+            {t("nav.contact")} <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>
           <button
             type="button"
@@ -85,6 +88,7 @@ export function SiteHeader() {
             transition={{ duration: 0.2 }}
             className="mx-auto mt-3 max-w-7xl overflow-hidden rounded-[1.75rem] border border-white/[0.09] bg-[#050916]/92 p-3 text-white shadow-[0_16px_48px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 lg:hidden"
           >
+            <div className="mb-2 px-2 xl:hidden"><LanguageSwitcher /></div>
             {navigation.map((item, index) => (
               <Link
                 key={item.href}
