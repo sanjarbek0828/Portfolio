@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
-    "@react-three/drei": "^10.7.7",
+    "@react-three/drei": "^9.120.4",
     "@react-three/fiber": "^8.18.0",
     "@types/three": "^0.185.1",
     "class-variance-authority": "^0.7.1",
