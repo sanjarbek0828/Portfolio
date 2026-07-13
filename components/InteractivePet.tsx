@@ -6,7 +6,7 @@ import { ArrowUp, BriefcaseBusiness, Code2, Download, Grip, Mail, Sparkles, User
 import { useLanguage } from "@/components/LanguageProvider";
 import { profile } from "@/lib/portfolio-data";
 import Byte3D from "./Byte3D";
-import { useSound } from "@/hooks/useSound";
+import Byte3D from "./Byte3D";
 
 const PET_WIDTH = 96;
 const PET_HEIGHT = 106;
@@ -36,7 +36,6 @@ const copy = {
 
 export function InteractivePet() {
   const { language } = useLanguage();
-  const { playClick, playHover } = useSound();
   const constraintsRef = useRef<HTMLDivElement>(null);
   const draggedRef = useRef(false);
   const x = useMotionValue(24);
@@ -105,7 +104,6 @@ export function InteractivePet() {
 
   const handleClick = () => {
     if (!draggedRef.current) {
-      playClick();
       setSpinTrigger(prev => prev + 1); // Trigger 3D spin
       setOpen(val => !val);
       setBubbleVisible(false);
@@ -122,7 +120,7 @@ export function InteractivePet() {
         style={{ x, y }}
         initial={{ opacity: 0, scale: 0.72 }}
         animate={{ opacity: ready ? 1 : 0, scale: ready ? 1 : 0.72 }}
-        onDragStart={() => { draggedRef.current = true; setMoving(true); setOpen(false); setBubbleVisible(false); playClick(); }}
+        onDragStart={() => { draggedRef.current = true; setMoving(true); setOpen(false); setBubbleVisible(false); }}
         onDrag={(_, info) => {
           if (Math.abs(info.delta.x) > 0.2) setFacing((current) => {
             const next = info.delta.x > 0 ? 1 : -1;
@@ -171,17 +169,17 @@ export function InteractivePet() {
                   <p className="text-xs font-black tracking-wide text-slate-800 dark:text-blue-50">{text.greeting}</p>
                   <p className="mt-1 text-[0.65rem] leading-5 text-slate-500 dark:text-blue-200/70">{text.hint}</p>
                 </div>
-                <button type="button" onClick={() => { playClick(); setOpen(false); }} aria-label="Yordamchini yopish" onMouseEnter={playHover} className="grid h-7 w-7 shrink-0 place-items-center rounded-xl bg-slate-100/50 text-slate-400 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10">
+                <button type="button" onClick={() => { setOpen(false); }} aria-label="Yordamchini yopish" className="grid h-7 w-7 shrink-0 place-items-center rounded-xl bg-slate-100/50 text-slate-400 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10">
                   <X className="h-3.5 w-3.5" />
                 </button>
               </div>
               <div className="mt-5 grid grid-cols-2 gap-2.5">
-                <Action icon={UserRound} label={text.about} onClick={() => { playClick(); navigate("#about"); }} onHover={playHover} />
-                <Action icon={Wrench} label={text.skills} onClick={() => { playClick(); navigate("#skills"); }} onHover={playHover} />
-                <Action icon={BriefcaseBusiness} label={text.projects} onClick={() => { playClick(); navigate("#projects"); }} onHover={playHover} />
-                <Action icon={Mail} label={text.contact} onClick={() => { playClick(); navigate("#contact"); }} primary onHover={playHover} />
-                <a href={profile.resume} target="_blank" rel="noreferrer" onMouseEnter={playHover} onClick={playClick} className="focus-ring inline-flex items-center gap-2 rounded-xl border border-slate-200/50 bg-white/50 px-3 py-2.5 text-[0.62rem] font-bold text-slate-600 transition hover:border-primary/40 hover:bg-primary/5 hover:text-primary dark:border-white/5 dark:bg-white/5 dark:text-blue-200/70 dark:hover:border-primary/40 dark:hover:bg-primary/10 dark:hover:text-primary"><Download className="h-3.5 w-3.5" />{text.resume}</a>
-                <Action icon={ArrowUp} label={text.top} onClick={() => { playClick(); navigate("#home"); }} onHover={playHover} />
+                <Action icon={UserRound} label={text.about} onClick={() => { navigate("#about"); }} />
+                <Action icon={Wrench} label={text.skills} onClick={() => { navigate("#skills"); }} />
+                <Action icon={BriefcaseBusiness} label={text.projects} onClick={() => { navigate("#projects"); }} />
+                <Action icon={Mail} label={text.contact} onClick={() => { navigate("#contact"); }} primary />
+                <a href={profile.resume} target="_blank" rel="noreferrer" className="focus-ring inline-flex items-center gap-2 rounded-xl border border-slate-200/50 bg-white/50 px-3 py-2.5 text-[0.62rem] font-bold text-slate-600 transition hover:border-primary/40 hover:bg-primary/5 hover:text-primary dark:border-white/5 dark:bg-white/5 dark:text-blue-200/70 dark:hover:border-primary/40 dark:hover:bg-primary/10 dark:hover:text-primary"><Download className="h-3.5 w-3.5" />{text.resume}</a>
+                <Action icon={ArrowUp} label={text.top} onClick={() => { navigate("#home"); }} />
               </div>
               <div className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300/60 bg-slate-100/30 px-3 py-2 text-[0.6rem] font-medium text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-blue-200/50">
                 <Grip className="h-3.5 w-3.5 text-primary" />{text.drag}
@@ -194,8 +192,7 @@ export function InteractivePet() {
         <motion.button
           type="button"
           onClick={handleClick}
-          onDoubleClick={() => { playClick(); navigate("#home"); }}
-          onMouseEnter={playHover}
+          onDoubleClick={() => { navigate("#home"); }}
           aria-label="Byte portfolio yordamchisini ochish"
           whileHover={{ scale: 1.07 }}
           whileTap={{ scale: 0.92 }}
@@ -216,12 +213,11 @@ export function InteractivePet() {
   );
 }
 
-function Action({ icon: Icon, label, onClick, primary = false, onHover }: { icon: typeof Code2; label: string; onClick: () => void; primary?: boolean; onHover?: () => void }) {
+function Action({ icon: Icon, label, onClick, primary = false }: { icon: typeof Code2; label: string; onClick: () => void; primary?: boolean }) {
   return (
     <button 
       type="button" 
       onClick={onClick} 
-      onMouseEnter={onHover}
       className={`focus-ring inline-flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left text-[0.62rem] font-bold transition shadow-sm ${
         primary 
           ? "border-primary bg-primary text-white shadow-primary/20 hover:bg-primary/90 hover:shadow-primary/40" 

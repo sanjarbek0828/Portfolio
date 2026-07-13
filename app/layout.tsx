@@ -4,8 +4,6 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/components/AuthProvider";
 import { LanguageProvider } from "@/components/LanguageProvider";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
-import { SmoothScroll } from "@/components/SmoothScroll";
-
 
 import "./globals.css";
 
@@ -112,16 +110,14 @@ export default function RootLayout({
         <AuthProvider>
           <LanguageProvider>
             <ThemeProvider>
-              <SmoothScroll>
-                <AnalyticsTracker />
-                <a
-                  href="#main-content"
-                  className="focus-ring fixed left-4 top-4 z-[100] -translate-y-24 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition focus:translate-y-0"
-                >
-                  Kontentga o‘tish
-                </a>
-                {children}
-              </SmoothScroll>
+              <AnalyticsTracker />
+              <a
+                href="#main-content"
+                className="focus-ring fixed left-4 top-4 z-[100] -translate-y-24 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition focus:translate-y-0"
+              >
+                Kontentga o‘tish
+              </a>
+              {children}
             </ThemeProvider>
           </LanguageProvider>
         </AuthProvider>
