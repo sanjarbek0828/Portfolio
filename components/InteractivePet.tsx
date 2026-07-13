@@ -6,7 +6,6 @@ import { ArrowUp, BriefcaseBusiness, Code2, Download, Grip, Mail, Sparkles, User
 import { useLanguage } from "@/components/LanguageProvider";
 import { profile } from "@/lib/portfolio-data";
 import Byte3D from "./Byte3D";
-import Byte3D from "./Byte3D";
 
 const PET_WIDTH = 96;
 const PET_HEIGHT = 106;
