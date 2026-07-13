@@ -34,14 +34,34 @@ export function generateMetadata({ params }: ProjectPageProps): Metadata {
     return { title: "Loyiha topilmadi" };
   }
 
+  const ogDescription = `${project.description} Texnologiyalar: ${project.stack.slice(0, 3).join(", ")}.`;
+
   return {
     title: `${project.title} — Loyiha tafsilotlari`,
-    description: project.description,
+    description: ogDescription,
+    keywords: [...project.stack, project.title, "Sanjarbek Otabekov", "Portfolio"],
     openGraph: {
-      title: `${project.title} — Loyiha tafsilotlari`,
-      description: project.description,
+      title: `${project.title} — Sanjarbek Otabekov Portfolio`,
+      description: ogDescription,
       type: "article",
+      url: `https://sanjarme.uz/projects/${project.slug}`,
+      images: [
+        {
+          url: project.image,
+          width: 1200,
+          height: 630,
+          alt: `${project.title} — ${project.category}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${project.title} — Sanjarbek Otabekov`,
+      description: ogDescription,
       images: [project.image],
+    },
+    alternates: {
+      canonical: `https://sanjarme.uz/projects/${project.slug}`,
     },
   };
 }

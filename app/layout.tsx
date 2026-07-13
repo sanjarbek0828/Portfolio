@@ -10,34 +10,45 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://sanjarme.uz"),
   title: {
-    default: "Sanjarbek Otabekov — Full-Stack Developer & UI/UX Designer",
+    default: "Sanjarbek Otabekov — Full-Stack Developer & UI/UX Designer | Portfolio",
     template: "%s — Sanjarbek Otabekov",
   },
   description:
-    "Sanjarbek Otabekov — zamonaviy, tezkor va yuqori unumdorlikka ega web ilovalar yaratadigan Full-Stack Developer va UI/UX Designer.",
+    "Sanjarbek Otabekov — React, Next.js, Node.js va TypeScript texnologiyalari bilan zamonaviy, tezkor va yuqori unumdorlikka ega web ilovalar yaratadigan Full-Stack Developer va UI/UX Designer. O'zbekistonlik professional dasturchi.",
   keywords: [
     "Sanjarbek Otabekov",
     "Full-Stack Developer",
     "Next.js Developer",
     "React Developer",
     "Node.js Developer",
+    "TypeScript Developer",
     "UI/UX Designer",
-    "O‘zbekiston dasturchi",
+    "Web Developer Uzbekistan",
+    "O'zbekistonlik dasturchi",
+    " dasturchi",
+    "Frontend Developer",
+    "Backend Developer",
+    "Portfolio",
+    "Freelance Developer",
+    "JavaScript Developer",
   ],
   authors: [{ name: "Sanjarbek Otabekov", url: "https://sanjarme.uz" }],
   creator: "Sanjarbek Otabekov",
+  publisher: "Sanjarbek Otabekov",
+  category: "technology",
   openGraph: {
     title: "Sanjarbek Otabekov — Full-Stack Developer & UI/UX Designer",
     description:
-      "Zamonaviy, tezkor va foydalanuvchiga yo‘naltirilgan web ilovalar, botlar va interfeyslar yarataman.",
+      "React, Next.js, Node.js bilan zamonaviy web ilovalar, Telegram botlar va chiroyli interfeyslar yarataman. 7+ real loyiha, 3+ xursand mijoz.",
     url: "https://sanjarme.uz/",
     siteName: "Sanjarbek Otabekov Portfolio",
     images: [
       {
-        url: "https://sanjarme.uz/preview.jpg",
+        url: "/Preview.png",
         width: 1200,
         height: 630,
-        alt: "Sanjarbek Otabekov Portfolio Preview",
+        alt: "Sanjarbek Otabekov — Full-Stack Developer & UI/UX Designer Portfolio",
+        type: "image/png",
       },
     ],
     locale: "uz_UZ",
@@ -47,8 +58,15 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sanjarbek Otabekov — Full-Stack Developer & UI/UX Designer",
     description:
-      "Zamonaviy, tezkor va foydalanuvchiga yo‘naltirilgan web ilovalar, botlar va interfeyslar yarataman.",
-    images: ["https://sanjarme.uz/preview.jpg"],
+      "React, Next.js, Node.js bilan zamonaviy web ilovalar, Telegram botlar va chiroyli interfeyslar yarataman.",
+    images: [
+      {
+        url: "/Preview.png",
+        width: 1200,
+        height: 630,
+        alt: "Sanjarbek Otabekov Portfolio Preview",
+      },
+    ],
     creator: "@sanjarbek_404",
   },
   robots: {
@@ -68,6 +86,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
+  },
+  other: {
+    "google-site-verification": "",
   },
 };
 
@@ -89,15 +110,36 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Sanjarbek Otabekov",
+    alternateName: "Sanjarbek",
     jobTitle: "Full-Stack Developer & UI/UX Designer",
     url: "https://sanjarme.uz",
     sameAs: [
       "https://github.com/sanjarbek404",
       "https://www.linkedin.com/in/sanjarbek-otabekov-0600733bb/",
-      "https://t.me/sanjarbek_404"
+      "https://t.me/sanjarbek_404",
     ],
-    description: "Sanjarbek Otabekov — zamonaviy, tezkor va yuqori unumdorlikka ega web ilovalar yaratadigan Full-Stack Developer va UI/UX Designer.",
-    image: "https://sanjarme.uz/preview.jpg"
+    description: "Sanjarbek Otabekov — React, Next.js, Node.js va TypeScript texnologiyalari bilan zamonaviy web ilovalar yaratadigan Full-Stack Developer va UI/UX Designer.",
+    image: "https://sanjarme.uz/Preview.png",
+    email: "sanjarbekotabekov010@gmail.com",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Toshkent",
+      addressCountry: "UZ",
+    },
+    knowsAbout: ["React", "Next.js", "Node.js", "TypeScript", "Tailwind CSS", "UI/UX Design", "JavaScript", "MongoDB", "Firebase"],
+    knowsLanguage: ["uz", "ru", "en"],
+  };
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Sanjarbek Otabekov Portfolio",
+    url: "https://sanjarme.uz",
+    description: "Professional portfolio of Sanjarbek Otabekov — Full-Stack Developer & UI/UX Designer",
+    author: {
+      "@type": "Person",
+      name: "Sanjarbek Otabekov",
+    },
   };
 
   return (
@@ -106,6 +148,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
         <AuthProvider>
           <LanguageProvider>
