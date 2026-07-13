@@ -6,7 +6,10 @@ import { ArrowRight, Check, Download, FileText, Github, Languages, Mail, Moon, S
 import { useTheme } from "next-themes";
 import { useLanguage, type Language } from "@/components/LanguageProvider";
 import { profile } from "@/lib/portfolio-data";
-import { trackEvent } from "@/lib/analytics";
+
+function recordEvent(name: string, metadata: Record<string, string>) {
+  void import("@/lib/analytics").then(({ trackEvent }) => trackEvent(name, metadata));
+}
 
 type CommandAction = { id: string; label: string; description: string; icon: typeof Search; keywords: string; run: () => void | Promise<void> };
 
@@ -16,11 +19,11 @@ const commandCopy = {
   EN: { placeholder: "Search sections and actions...", empty: "No matching command", footer: "Quick portfolio controls", copied: "Email copied", theme: "Switch color theme", language: "Change language", github: "Open GitHub profile", email: "Copy email address", resume: "Download CV", mail: "Write an email" },
 } as const;
 
-export function CommandMenu() {
+export function CommandMenu({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
   const { language, setLanguage, t } = useLanguage();
   const { resolvedTheme, setTheme } = useTheme();
   
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(initiallyOpen);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -30,7 +33,7 @@ export function CommandMenu() {
   const close = useCallback(() => setOpen(false), []);
   const scrollTo = useCallback((href: string) => {
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    trackEvent("command_palette_action", { action: href, language });
+    recordEvent("command_palette_action", { action: href, language });
     close();
   }, [close, language]);
 
@@ -41,12 +44,12 @@ export function CommandMenu() {
     const nextLanguage: Language = language === "UZ" ? "RU" : language === "RU" ? "EN" : "UZ";
     return [
       ...sectionActions,
-      { id: "copy-email", label: text.email, description: copied ? text.copied : profile.email, icon: copied ? Check : Mail, keywords: "email mail copy aloqa", run: async () => { await navigator.clipboard.writeText(profile.email); setCopied(true); trackEvent("command_palette_action", { action: "copy_email", language }); window.setTimeout(close, 650); } },
+      { id: "copy-email", label: text.email, description: copied ? text.copied : profile.email, icon: copied ? Check : Mail, keywords: "email mail copy aloqa", run: async () => { await navigator.clipboard.writeText(profile.email); setCopied(true); recordEvent("command_palette_action", { action: "copy_email", language }); window.setTimeout(close, 650); } },
       { id: "write-email", label: text.mail, description: profile.email, icon: Send, keywords: "email send xat contact", run: () => { window.location.href = `mailto:${profile.email}`; close(); } },
-      { id: "resume", label: text.resume, description: "PDF · CV · Resume", icon: Download, keywords: "cv resume download yuklash", run: () => { window.open(profile.resume, "_blank", "noopener,noreferrer"); trackEvent("command_palette_action", { action: "resume", language }); close(); } },
-      { id: "github", label: text.github, description: "github.com/sanjarbek404", icon: Github, keywords: "github source code repository", run: () => { window.open("https://github.com/sanjarbek404", "_blank", "noopener,noreferrer"); trackEvent("command_palette_action", { action: "github", language }); close(); } },
-      { id: "theme", label: text.theme, description: resolvedTheme === "dark" ? "Dark → Light" : "Light → Dark", icon: resolvedTheme === "dark" ? Sun : Moon, keywords: "theme dark light rang rejim", run: () => { setTheme(resolvedTheme === "dark" ? "light" : "dark"); trackEvent("command_palette_action", { action: "theme", language }); close(); } },
-      { id: "language", label: text.language, description: `${language} → ${nextLanguage}`, icon: Languages, keywords: "language til язык uz ru en", run: () => { setLanguage(nextLanguage); trackEvent("command_palette_action", { action: "language", language: nextLanguage }); close(); } },
+      { id: "resume", label: text.resume, description: "PDF · CV · Resume", icon: Download, keywords: "cv resume download yuklash", run: () => { window.open(profile.resume, "_blank", "noopener,noreferrer"); recordEvent("command_palette_action", { action: "resume", language }); close(); } },
+      { id: "github", label: text.github, description: "github.com/sanjarbek404", icon: Github, keywords: "github source code repository", run: () => { window.open("https://github.com/sanjarbek404", "_blank", "noopener,noreferrer"); recordEvent("command_palette_action", { action: "github", language }); close(); } },
+      { id: "theme", label: text.theme, description: resolvedTheme === "dark" ? "Dark → Light" : "Light → Dark", icon: resolvedTheme === "dark" ? Sun : Moon, keywords: "theme dark light rang rejim", run: () => { setTheme(resolvedTheme === "dark" ? "light" : "dark"); recordEvent("command_palette_action", { action: "theme", language }); close(); } },
+      { id: "language", label: text.language, description: `${language} → ${nextLanguage}`, icon: Languages, keywords: "language til язык uz ru en", run: () => { setLanguage(nextLanguage); recordEvent("command_palette_action", { action: "language", language: nextLanguage }); close(); } },
     ];
   }, [close, copied, language, resolvedTheme, scrollTo, setLanguage, setTheme, t, text]);
 

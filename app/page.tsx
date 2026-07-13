@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import {
   ArrowUpRight,
   Braces,
@@ -22,16 +23,13 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { TechIcon } from "@/components/TechIcon";
 import { TypewriterName } from "@/components/TypewriterName";
 import { TypewriterRole } from "@/components/TypewriterRole";
-import { Projects } from "@/components/Projects";
-import { Certificates } from "@/components/Certificates";
 import { useLanguage } from "@/components/LanguageProvider";
-import { TestimonialMarquee } from "@/components/TestimonialMarquee";
 import { InteractiveHeroBackground } from "@/components/InteractiveHeroBackground";
 import { GitHubStats } from "@/components/GitHubStats";
-import { ContactForm } from "@/components/ContactForm";
 import { DesktopInteractivePet } from "@/components/DesktopInteractivePet";
-import { CommandMenu } from "@/components/CommandMenu";
-import { trackEvent } from "@/lib/analytics";
+import { DeferredCommandMenu } from "@/components/DeferredCommandMenu";
+import { LiveStatus } from "@/components/LiveStatus";
+import { DeferredRender } from "@/components/DeferredRender";
 import {
   faq,
   profile,
@@ -42,6 +40,38 @@ import {
   timeline,
   workflow,
 } from "@/lib/portfolio-data";
+
+const LazyProjects = dynamic(
+  () => import("@/components/Projects").then((module) => module.Projects),
+  { ssr: false },
+);
+const LazyCertificates = dynamic(
+  () => import("@/components/Certificates").then((module) => module.Certificates),
+  { ssr: false },
+);
+const LazyTestimonials = dynamic(
+  () => import("@/components/TestimonialMarquee").then((module) => module.TestimonialMarquee),
+  { ssr: false },
+);
+const LazyContactForm = dynamic(
+  () => import("@/components/ContactForm").then((module) => module.ContactForm),
+  { ssr: false },
+);
+
+function recordEvent(name: string, metadata: Record<string, string>) {
+  void import("@/lib/analytics").then(({ trackEvent }) => trackEvent(name, metadata));
+}
+
+function SectionPlaceholder({ label }: { label: string }) {
+  return (
+    <div className="container flex min-h-[20rem] items-center justify-center py-20" aria-hidden="true">
+      <div className="flex items-center gap-3 font-mono text-[0.62rem] font-bold uppercase tracking-[0.22em] text-foreground/35 dark:text-white/30">
+        <span className="h-2 w-2 rounded-full bg-primary shadow-[0_0_14px_rgba(69,105,255,0.65)]" />
+        {label}
+      </div>
+    </div>
+  );
+}
 
 const serviceIcons = [Code2, Figma, MonitorSmartphone, ServerCog];
 const socialIcons = { GitHub: Github, LinkedIn: Linkedin, Telegram: Send };
@@ -97,7 +127,7 @@ export default function HomePage() {
     <>
       <ScrollProgress />
       <SiteHeader />
-      <CommandMenu />
+      <DeferredCommandMenu />
       <DesktopInteractivePet />
 
       <main id="main-content" className="overflow-hidden bg-[#f5f7fb] text-slate-950 dark:bg-[#020611] dark:text-white">
@@ -158,7 +188,7 @@ export default function HomePage() {
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="#contact"
-                  onClick={() => trackEvent("hero_cta", { target: "contact", language })}
+                  onClick={() => recordEvent("hero_cta", { target: "contact", language })}
                   className="focus-ring group inline-flex h-12 items-center justify-center gap-3 rounded-lg border border-[#6685ff]/70 bg-[#4569ff]/10 px-6 font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#8aa0ff] backdrop-blur-md transition hover:-translate-y-1 hover:bg-[#4569ff] hover:text-white hover:shadow-[0_0_35px_rgba(69,105,255,0.35)]"
                 >
                   {t("hero.cta")}
@@ -166,18 +196,15 @@ export default function HomePage() {
                 </a>
                 <a
                   href="#projects"
-                  onClick={() => trackEvent("hero_cta", { target: "projects", language })}
+                  onClick={() => recordEvent("hero_cta", { target: "projects", language })}
                   className="focus-ring inline-flex h-12 items-center justify-center rounded-lg border border-white/10 bg-black/20 px-6 text-xs font-semibold text-white/70 backdrop-blur-md transition hover:-translate-y-1 hover:border-white/25 hover:text-white"
                 >
                   {t("hero.projects")}
                 </a>
               </div>
 
-              <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <p className="flex items-center gap-2 text-[0.65rem] font-medium text-emerald-300/80">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]" />
-                  {t("hero.available")}
-                </p>
+              <div className="mt-7 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                <LiveStatus />
                 <GitHubStats />
               </div>
             </ScrollReveal>
@@ -292,10 +319,24 @@ export default function HomePage() {
         </section>
 
         {/* ── PROJECTS ── */}
-        <Projects />
+        <div id="projects" className="scroll-mt-24">
+          <DeferredRender
+            minHeight={720}
+            rootMargin="900px 0px"
+            fallback={<SectionPlaceholder label="Projects loading" />}
+          >
+            <LazyProjects />
+          </DeferredRender>
+        </div>
 
         {/* ── CERTIFICATES ── */}
-        <Certificates />
+        <DeferredRender
+          minHeight={520}
+          rootMargin="800px 0px"
+          fallback={<SectionPlaceholder label="Certificates loading" />}
+        >
+          <LazyCertificates />
+        </DeferredRender>
 
         {/* ── EXPERIENCE ── */}
         <section id="experience" className="relative overflow-hidden border-t border-black/5 dark:border-white/[0.06]">
@@ -347,7 +388,9 @@ export default function HomePage() {
                 <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">Reviews</p>
                 <h2 className="mt-4 text-3xl font-black tracking-[-0.05em] text-foreground dark:text-white sm:text-5xl">What Clients Say</h2>
               </div>
-              <TestimonialMarquee />
+              <DeferredRender minHeight={350} rootMargin="500px 0px">
+                <LazyTestimonials />
+              </DeferredRender>
             </ScrollReveal>
           </div>
 
@@ -424,7 +467,9 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="lg:col-span-2">
-                  <ContactForm />
+                  <DeferredRender minHeight={360} rootMargin="700px 0px">
+                    <LazyContactForm />
+                  </DeferredRender>
                 </div>
               </div>
             </ScrollReveal>

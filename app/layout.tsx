@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { AuthProvider } from "@/components/AuthProvider";
 import { LanguageProvider } from "@/components/LanguageProvider";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 
@@ -153,8 +152,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
-        <AuthProvider>
-          <LanguageProvider>
+        <LanguageProvider>
             <ThemeProvider>
               <AnalyticsTracker />
               <a
@@ -165,8 +163,7 @@ export default function RootLayout({
               </a>
               {children}
             </ThemeProvider>
-          </LanguageProvider>
-        </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -324,7 +324,7 @@ export function Projects() {
   }, [selectedProject]);
 
   return (
-    <section id="projects" aria-labelledby="projects-heading" className="content-auto relative overflow-hidden bg-white dark:bg-[#020611] text-foreground dark:text-white">
+    <section aria-labelledby="projects-heading" className="content-auto relative overflow-hidden bg-white dark:bg-[#020611] text-foreground dark:text-white">
       <div aria-hidden="true" className="absolute -left-20 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[120px]" />
       <div aria-hidden="true" className="absolute -right-32 top-3/4 h-[400px] w-[400px] rounded-full bg-[#4569ff]/15 blur-[120px]" />
       <div className="pointer-events-none absolute inset-x-0 top-1/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />

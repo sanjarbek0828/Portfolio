@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -23,14 +22,11 @@ export function ThemeToggle() {
     >
       <Sun className={`absolute left-2.5 h-3.5 w-3.5 transition ${dark ? "text-white/25" : "text-amber-300"}`} />
       <Moon className={`absolute right-2.5 h-3.5 w-3.5 transition ${dark ? "text-[#9caeff]" : "text-white/25"}`} />
-      <motion.span
-        initial={false}
-        animate={{ x: dark ? 30 : 0 }}
-        transition={{ type: "spring", stiffness: 420, damping: 30 }}
-        className="relative z-10 grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-[#10172a] shadow-[0_5px_16px_rgba(0,0,0,0.45)]"
+      <span
+        className={`relative z-10 grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-[#10172a] shadow-[0_5px_16px_rgba(0,0,0,0.45)] transition-transform duration-300 ${dark ? "translate-x-[28px]" : "translate-x-0"}`}
       >
         {mounted && dark ? <Moon className="h-3.5 w-3.5 text-[#9caeff]" /> : <Sun className="h-3.5 w-3.5 text-amber-300" />}
-      </motion.span>
+      </span>
     </button>
   );
 }
