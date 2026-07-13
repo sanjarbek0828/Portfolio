@@ -199,7 +199,6 @@ function ProjectModal({
       >
         <div className={cn("relative overflow-hidden bg-gradient-to-br p-7 text-white sm:p-10", project.accent)}>
           <div className="absolute inset-0 bg-black/40" />
-          <div aria-hidden="true" className="dot-grid absolute inset-0 opacity-30 mix-blend-overlay" />
           <div aria-hidden="true" className="absolute -left-20 top-0 h-[300px] w-[300px] rounded-full bg-black/5 dark:bg-white/10 blur-[90px]" />
           <div className="relative pr-12">
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-white/70">
@@ -326,7 +325,6 @@ export function Projects() {
 
   return (
     <section id="projects" aria-labelledby="projects-heading" className="content-auto relative overflow-hidden bg-white dark:bg-[#020611] text-foreground dark:text-white">
-      <div aria-hidden="true" className="dot-grid absolute inset-0 opacity-15 mask-fade-bottom" />
       <div aria-hidden="true" className="absolute -left-20 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[120px]" />
       <div aria-hidden="true" className="absolute -right-32 top-3/4 h-[400px] w-[400px] rounded-full bg-[#4569ff]/15 blur-[120px]" />
       <div className="pointer-events-none absolute inset-x-0 top-1/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />

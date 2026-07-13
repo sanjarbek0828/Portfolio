@@ -173,11 +173,6 @@
     text-wrap: pretty;
   }
 
-  .dot-grid {
-    background-image: radial-gradient(hsl(var(--foreground) / 0.12) 1px, transparent 1px);
-    background-size: 22px 22px;
-  }
-
   .grid-surface {
     background-image:
       linear-gradient(hsl(var(--foreground) / 0.045) 1px, transparent 1px),

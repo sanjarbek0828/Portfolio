@@ -186,7 +186,6 @@ export default function HomePage() {
 
         {/* ── ABOUT BENTO BOX ── */}
         <section id="about" className="relative overflow-hidden border-t border-black/5 dark:border-white/[0.06]">
-          <div aria-hidden="true" className="dot-grid absolute inset-0 opacity-[0.07]" />
           <div aria-hidden="true" className="absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-[#4569ff]/[0.07] blur-[140px]" />
           <div aria-hidden="true" className="absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-primary/[0.06] blur-[120px]" />
           
@@ -269,7 +268,6 @@ export default function HomePage() {
 
         {/* ── SKILLS ── */}
         <section id="skills" className="relative overflow-hidden border-t border-black/5 dark:border-white/[0.06]">
-          <div aria-hidden="true" className="dot-grid absolute inset-0 opacity-[0.08]" />
           <div aria-hidden="true" className="absolute -right-32 top-0 h-[500px] w-[500px] rounded-full bg-primary/[0.08] blur-[140px]" />
           <div aria-hidden="true" className="absolute -left-20 bottom-0 h-[400px] w-[400px] rounded-full bg-[#4569ff]/[0.07] blur-[120px]" />
           <div className="container relative z-10 py-20 sm:py-28">
@@ -301,7 +299,6 @@ export default function HomePage() {
 
         {/* ── EXPERIENCE ── */}
         <section id="experience" className="relative overflow-hidden border-t border-black/5 dark:border-white/[0.06]">
-          <div aria-hidden="true" className="dot-grid absolute inset-0 opacity-[0.07]" />
           <div aria-hidden="true" className="absolute right-0 top-1/4 h-[500px] w-[500px] -translate-y-1/2 translate-x-1/3 rounded-full bg-primary/[0.06] blur-[120px]" />
           <div className="container relative z-10 py-24 sm:py-28 lg:py-36">
             <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
