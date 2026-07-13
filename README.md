@@ -28,7 +28,7 @@ Loyihani o'z kompyuteringizda ishga tushirish uchun quyidagi qadamlarni bajaring
 
 ### 1. Repozitoriyni yuklab olish
 ```bash
-git clone https://github.com/sanjarbek404/portfolio.git
+git clone https://github.com/sanjarbek0828/portfolio.git
 cd portfolio
 ```
 
