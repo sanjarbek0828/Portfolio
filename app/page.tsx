@@ -194,13 +194,33 @@ export default function HomePage() {
             <ScrollReveal>
               <div className="flex flex-col items-center justify-center text-center mb-16">
                 <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("about.label")}</p>
-                  <div key={item.label} className="rounded-3xl border border-black/5 dark:border-white/[0.08] bg-black/5 dark:bg-white/[0.03] p-5 backdrop-blur-md">
-                    <p className="text-3xl font-black tracking-[-0.055em] text-foreground dark:text-white sm:text-4xl">{item.value}</p>
-                    <p className="mt-2 text-xs leading-5 text-foreground dark:text-white/50">{item.label}</p>
-                  </div>
-                ))}
+                <h2 className="mt-4 text-3xl font-black tracking-[-0.05em] text-foreground dark:text-white sm:text-5xl lg:text-6xl">Full-Stack & UX Expert</h2>
               </div>
             </ScrollReveal>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 auto-rows-auto">
+              {/* Main Bio Box */}
+              <ScrollReveal delay={0.05} className="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-[2.5rem] border border-black/5 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.02] p-8 sm:p-12 backdrop-blur-xl transition hover:border-primary/30">
+                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-primary/[0.04] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="relative z-10">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-6">
+                    <Quote className="h-5 w-5" />
+                  </div>
+                  <p className="text-balance text-xl font-semibold leading-relaxed tracking-[-0.02em] text-foreground dark:text-white/90 sm:text-2xl lg:text-3xl">
+                    {t("about.text", profile.fullAbout)}
+                  </p>
+                </div>
+              </ScrollReveal>
+
+              {/* Stat Boxes */}
+              {localizedStats.map((item, index) => (
+                <ScrollReveal key={item.label} delay={0.1 + index * 0.05} className="group relative overflow-hidden rounded-[2rem] border border-black/5 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.02] p-6 sm:p-8 backdrop-blur-xl flex flex-col justify-center items-start transition hover:border-primary/30">
+                  <div aria-hidden="true" className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/[0.08] blur-[40px] transition-all duration-500 group-hover:bg-primary/[0.15] group-hover:blur-[50px]" />
+                  <p className="text-4xl font-black tracking-[-0.05em] text-primary sm:text-5xl">{item.value}</p>
+                  <p className="mt-3 text-sm font-medium leading-5 text-foreground/70 dark:text-white/60">{item.label}</p>
+                </ScrollReveal>
+              ))}
+            </div>
           </div>
         </section>
 
