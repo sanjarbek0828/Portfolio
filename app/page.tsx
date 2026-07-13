@@ -25,6 +25,7 @@ import { TypewriterRole } from "@/components/TypewriterRole";
 import { Projects } from "@/components/Projects";
 import { Certificates } from "@/components/Certificates";
 import { useLanguage } from "@/components/LanguageProvider";
+import { TestimonialMarquee } from "@/components/TestimonialMarquee";
 import { InteractiveHeroBackground } from "@/components/InteractiveHeroBackground";
 import { GitHubStats } from "@/components/GitHubStats";
 import { ContactForm } from "@/components/ContactForm";
@@ -183,21 +184,16 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── ABOUT ── */}
+        {/* ── ABOUT BENTO BOX ── */}
         <section id="about" className="relative overflow-hidden border-t border-black/5 dark:border-white/[0.06]">
           <div aria-hidden="true" className="dot-grid absolute inset-0 opacity-[0.07]" />
           <div aria-hidden="true" className="absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-[#4569ff]/[0.07] blur-[140px]" />
           <div aria-hidden="true" className="absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-primary/[0.06] blur-[120px]" />
-          <div className="container relative z-10 py-20 sm:py-28">
-            <ScrollReveal className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-              <div>
+          
+          <div className="container relative z-10 py-20 sm:py-28 lg:py-36">
+            <ScrollReveal>
+              <div className="flex flex-col items-center justify-center text-center mb-16">
                 <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("about.label")}</p>
-                <p className="mt-5 max-w-3xl text-balance text-2xl font-semibold leading-snug tracking-[-0.035em] text-foreground dark:text-white/90 sm:text-4xl">
-                  {t("about.text", profile.fullAbout)}
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                {localizedStats.map((item) => (
                   <div key={item.label} className="rounded-3xl border border-black/5 dark:border-white/[0.08] bg-black/5 dark:bg-white/[0.03] p-5 backdrop-blur-md">
                     <p className="text-3xl font-black tracking-[-0.055em] text-foreground dark:text-white sm:text-4xl">{item.value}</p>
                     <p className="mt-2 text-xs leading-5 text-foreground dark:text-white/50">{item.label}</p>
@@ -208,41 +204,40 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── SERVICES ── */}
+        {/* ── SERVICES BENTO BOX ── */}
         <section className="relative overflow-hidden border-t border-black/5 dark:border-white/[0.06]">
           <div aria-hidden="true" className="grid-surface absolute inset-0 opacity-[0.04]" />
           <div aria-hidden="true" className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-primary/[0.06] blur-[140px]" />
           <div className="container relative z-10 py-24 sm:py-28 lg:py-36">
-            <ScrollReveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <ScrollReveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end mb-16">
               <div>
                 <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("services.label")}</p>
                 <h2 className="mt-4 max-w-3xl text-balance text-3xl font-black tracking-[-0.055em] text-foreground dark:text-white sm:text-5xl lg:text-6xl">
                   {t("services.title")}
                 </h2>
               </div>
-              <p className="max-w-sm text-sm leading-6 text-foreground dark:text-white/50">
+              <p className="max-w-sm text-sm leading-6 text-foreground/70 dark:text-white/50">
                 {t("services.description")}
               </p>
             </ScrollReveal>
 
-            <div className="mt-14 grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 auto-rows-auto">
               {localizedServices.map((service, index) => {
                 const Icon = serviceIcons[index];
+                const isLarge = index === 0 || index === 3; // Make some boxes span more for a true Bento feel
                 return (
-                  <ScrollReveal key={service.title} delay={index * 0.06}>
-                    <div className="group relative overflow-hidden rounded-[1.75rem] border border-black/5 dark:border-white/[0.08] bg-black/5 dark:bg-white/[0.025] p-7 backdrop-blur-md transition duration-500 hover:-translate-y-1 hover:border-primary/30 hover:bg-black/5 dark:bg-white/[0.04] sm:p-9">
-                      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-primary/[0.04] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                      <div className="relative z-10 flex h-full min-h-56 flex-col">
-                        <div className="flex items-center justify-between">
-                          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary">
-                            <Icon className="h-5 w-5" />
-                          </span>
-                          <span className="font-mono text-xs text-foreground dark:text-white/30">{service.number}</span>
-                        </div>
-                        <div className="mt-auto pt-12">
-                          <h3 className="text-2xl font-bold tracking-[-0.04em] text-foreground dark:text-white">{service.title}</h3>
-                          <p className="mt-4 max-w-lg text-sm leading-7 text-foreground dark:text-white/50">{service.description}</p>
-                        </div>
+                  <ScrollReveal key={service.title} delay={index * 0.08} className={`group relative overflow-hidden rounded-[2.5rem] border border-black/5 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.02] backdrop-blur-xl transition duration-500 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_20px_40px_-15px_rgba(0,100,255,0.15)] ${isLarge ? 'md:col-span-2' : 'md:col-span-1 lg:col-span-1'}`}>
+                    <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                    <div className="relative z-10 flex h-full min-h-[300px] flex-col p-8 sm:p-10">
+                      <div className="flex items-center justify-between">
+                        <span className="grid h-14 w-14 place-items-center rounded-2xl border border-primary/20 bg-primary/10 text-primary shadow-[inset_0_0_20px_rgba(0,100,255,0.1)] transition-transform duration-500 group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
+                          <Icon className="h-6 w-6" />
+                        </span>
+                        <span className="font-mono text-xs font-bold text-foreground/30 dark:text-white/20 transition-colors group-hover:text-primary">{service.number}</span>
+                      </div>
+                      <div className="mt-auto pt-14">
+                        <h3 className="text-2xl font-bold tracking-[-0.04em] text-foreground dark:text-white">{service.title}</h3>
+                        <p className="mt-4 text-sm leading-relaxed text-foreground/70 dark:text-white/60">{service.description}</p>
                       </div>
                     </div>
                   </ScrollReveal>
@@ -327,38 +322,39 @@ export default function HomePage() {
         {/* ── TESTIMONIAL + FAQ ── */}
         <section className="relative overflow-hidden border-t border-black/5 dark:border-white/[0.06]">
           <div aria-hidden="true" className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#4569ff]/[0.05] blur-[140px]" />
-          <div className="container relative z-10 py-24 sm:py-28">
-            <div className="grid gap-5 lg:grid-cols-[0.75fr_1.25fr]">
-              <ScrollReveal>
-                <div className="relative overflow-hidden rounded-[2rem] border border-black/5 dark:border-white/[0.08] bg-black/5 dark:bg-white/[0.025] p-8 backdrop-blur-md sm:p-10">
-                  <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-primary/[0.04] to-transparent" />
-                  <div className="relative z-10">
-                    <Quote className="h-10 w-10 text-primary" />
-                    <blockquote className="mt-10 text-balance text-xl font-semibold leading-snug tracking-[-0.035em] text-foreground dark:text-white sm:text-2xl">
-                      “{t("testimonial.quote")}”
-                    </blockquote>
-                    <div className="mt-10 border-t border-black/5 dark:border-white/10 pt-6">
-                      <p className="font-bold text-foreground dark:text-white">T-Mebel</p>
-                    <p className="mt-1 text-xs text-foreground dark:text-white/50">{t("testimonial.role")}</p>
+          
+          {/* Marquee Section */}
+          <div className="pt-24 sm:pt-28 pb-10">
+            <ScrollReveal>
+              <div className="container mb-12 text-center">
+                <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">Reviews</p>
+                <h2 className="mt-4 text-3xl font-black tracking-[-0.05em] text-foreground dark:text-white sm:text-5xl">What Clients Say</h2>
+              </div>
+              <TestimonialMarquee />
+            </ScrollReveal>
+          </div>
+
+          <div className="container relative z-10 pb-24 sm:pb-28">
+            <div className="mx-auto max-w-4xl">
+              <ScrollReveal delay={0.08}>
+                <div className="rounded-[2.5rem] border border-black/5 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.02] p-8 backdrop-blur-xl sm:p-12">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      <MessageCircle className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("faq.label")}</p>
+                      <h3 className="text-2xl font-bold tracking-tight text-foreground dark:text-white">Common Questions</h3>
                     </div>
                   </div>
-                </div>
-              </ScrollReveal>
-
-              <ScrollReveal delay={0.08}>
-                <div className="rounded-[1.75rem] border border-black/5 dark:border-white/[0.08] bg-black/5 dark:bg-white/[0.025] p-7 backdrop-blur-md sm:p-10">
-                  <div className="flex items-center gap-3">
-                    <MessageCircle className="h-5 w-5 text-primary" />
-                    <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">{t("faq.label")}</p>
-                  </div>
-                  <div className="mt-7 divide-y divide-slate-200/80 dark:divide-white/[0.06]">
+                  <div className="divide-y divide-black/5 dark:divide-white/[0.06]">
                     {localizedFaq.map((item, index) => (
-                      <details key={item.question} className="group py-5" open={index === 0}>
-                        <summary className="focus-ring flex cursor-pointer list-none items-center justify-between gap-5 rounded-lg text-base font-bold text-foreground dark:text-white marker:hidden">
+                      <details key={item.question} className="group py-6" open={index === 0}>
+                        <summary className="focus-ring flex cursor-pointer list-none items-center justify-between gap-5 rounded-lg text-lg font-bold text-foreground dark:text-white/90 marker:hidden transition hover:text-primary">
                           {item.question}
-                          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-black/5 dark:border-white/10 text-primary transition group-open:rotate-45">+</span>
+                          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-black/5 dark:border-white/10 text-primary transition duration-300 group-open:rotate-45 group-hover:border-primary/30 group-hover:bg-primary/5">+</span>
                         </summary>
-                        <p className="mt-4 max-w-2xl pr-10 text-sm leading-7 text-foreground dark:text-white/50">{item.answer}</p>
+                        <p className="mt-4 max-w-2xl pr-10 text-base leading-relaxed text-foreground/70 dark:text-white/60">{item.answer}</p>
                       </details>
                     ))}
                   </div>
