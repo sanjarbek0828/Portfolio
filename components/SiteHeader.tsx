@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Menu, X, Lock } from "lucide-react";
+import { ArrowUpRight, Menu, X, Lock, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -52,6 +52,7 @@ export function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-1.5">
+          <button type="button" onClick={() => window.dispatchEvent(new Event("portfolio:open-command"))} aria-label="Tezkor buyruqlarni ochish" className="focus-ring inline-flex h-10 w-10 items-center justify-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] text-[0.62rem] font-bold text-white/48 transition hover:border-primary/30 hover:text-white md:w-auto md:px-3"><Search className="h-3.5 w-3.5" /><span className="hidden md:inline">Ctrl K</span></button>
           <div className="hidden xl:block"><LanguageSwitcher /></div>
           <ThemeToggle />
           <Link

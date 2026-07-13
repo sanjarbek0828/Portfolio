@@ -29,6 +29,7 @@ import { InteractiveHeroBackground } from "@/components/InteractiveHeroBackgroun
 import { GitHubStats } from "@/components/GitHubStats";
 import { ContactForm } from "@/components/ContactForm";
 import { DesktopInteractivePet } from "@/components/DesktopInteractivePet";
+import { CommandMenu } from "@/components/CommandMenu";
 import { trackEvent } from "@/lib/analytics";
 import {
   faq,
@@ -95,6 +96,7 @@ export default function HomePage() {
     <>
       <ScrollProgress />
       <SiteHeader />
+      <CommandMenu />
       <DesktopInteractivePet />
 
       <main id="main-content" className="overflow-hidden bg-[#f5f7fb] text-slate-950 dark:bg-[#020611] dark:text-white">

@@ -8,7 +8,7 @@ import * as THREE from "three";
 export default function Byte3D({ facing, moving, spinTrigger = 0 }: { facing: number; moving: boolean; spinTrigger?: number }) {
   return (
     <div className="absolute inset-0 pointer-events-none scale-125">
-      <Canvas camera={{ position: [0, 0, 6], fov: 40 }}>
+      <Canvas dpr={[1, 1.35]} gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }} performance={{ min: 0.55 }} camera={{ position: [0, 0, 6], fov: 40 }}>
         <ambientLight intensity={0.8} />
         <directionalLight position={[10, 10, 5]} intensity={1.5} />
         <directionalLight position={[-10, 5, -5]} intensity={0.5} />
@@ -26,6 +26,9 @@ function RobotModel({ facing, moving, spinTrigger }: { facing: number; moving: b
   const mouth = useRef<THREE.Mesh>(null);
   const leftArm = useRef<THREE.Group>(null);
   const rightArm = useRef<THREE.Group>(null);
+  const body = useRef<THREE.Group>(null);
+  const leftLeg = useRef<THREE.Group>(null);
+  const rightLeg = useRef<THREE.Group>(null);
   const core = useRef<THREE.Mesh>(null);
   const targetSpin = useRef(0);
   const prevSpinTrigger = useRef(spinTrigger);
@@ -63,6 +66,26 @@ function RobotModel({ facing, moving, spinTrigger }: { facing: number; moving: b
     group.current.rotation.z = THREE.MathUtils.damp(group.current.rotation.z, targetZ, 4, delta);
 
     const time = state.clock.getElapsedTime();
+
+    if (body.current && leftLeg.current && rightLeg.current) {
+      const stride = Math.sin(time * 13);
+      const lift = Math.abs(Math.sin(time * 13));
+      if (moving) {
+        leftLeg.current.rotation.x = THREE.MathUtils.damp(leftLeg.current.rotation.x, stride * 0.62, 14, delta);
+        rightLeg.current.rotation.x = THREE.MathUtils.damp(rightLeg.current.rotation.x, -stride * 0.62, 14, delta);
+        leftLeg.current.position.y = -1 + Math.max(0, -stride) * 0.08;
+        rightLeg.current.position.y = -1 + Math.max(0, stride) * 0.08;
+        body.current.position.y = -0.5 + lift * 0.035;
+        body.current.rotation.y = THREE.MathUtils.damp(body.current.rotation.y, facing === 1 ? 0.12 : -0.12, 8, delta);
+      } else {
+        leftLeg.current.rotation.x = THREE.MathUtils.damp(leftLeg.current.rotation.x, 0, 8, delta);
+        rightLeg.current.rotation.x = THREE.MathUtils.damp(rightLeg.current.rotation.x, 0, 8, delta);
+        leftLeg.current.position.y = THREE.MathUtils.damp(leftLeg.current.position.y, -1, 8, delta);
+        rightLeg.current.position.y = THREE.MathUtils.damp(rightLeg.current.position.y, -1, 8, delta);
+        body.current.position.y = THREE.MathUtils.damp(body.current.position.y, -0.5, 8, delta);
+        body.current.rotation.y = THREE.MathUtils.damp(body.current.rotation.y, 0, 8, delta);
+      }
+    }
 
     // Eyes and mouth blink / talk
     if (leftEye.current && rightEye.current && mouth.current) {
@@ -146,7 +169,7 @@ function RobotModel({ facing, moving, spinTrigger }: { facing: number; moving: b
         </Cylinder>
 
         {/* === BODY === */}
-        <group position={[0, -0.5, 0]}>
+        <group ref={body} position={[0, -0.5, 0]}>
           <RoundedBox args={[1.2, 1.0, 0.9]} radius={0.2} smoothness={4}>
             <meshStandardMaterial color={creamColor} roughness={0.4} />
           </RoundedBox>
@@ -177,7 +200,7 @@ function RobotModel({ facing, moving, spinTrigger }: { facing: number; moving: b
         </group>
 
         {/* === LEGS === */}
-        <group position={[-0.3, -1.0, 0]}>
+        <group ref={leftLeg} position={[-0.3, -1.0, 0]}>
           <RoundedBox args={[0.3, 0.4, 0.3]} radius={0.05} position={[0, -0.1, 0]}>
             <meshStandardMaterial color={creamColor} roughness={0.4} />
           </RoundedBox>
@@ -186,7 +209,7 @@ function RobotModel({ facing, moving, spinTrigger }: { facing: number; moving: b
           </RoundedBox>
         </group>
 
-        <group position={[0.3, -1.0, 0]}>
+        <group ref={rightLeg} position={[0.3, -1.0, 0]}>
           <RoundedBox args={[0.3, 0.4, 0.3]} radius={0.05} position={[0, -0.1, 0]}>
             <meshStandardMaterial color={creamColor} roughness={0.4} />
           </RoundedBox>
