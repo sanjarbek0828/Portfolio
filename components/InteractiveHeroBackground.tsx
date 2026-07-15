@@ -133,7 +133,7 @@ export function InteractiveHeroBackground() {
 
       <div
         ref={characterRef}
-        className="absolute -inset-3 hidden origin-[65%_56%] scale-[1.018] will-change-transform [mask-image:radial-gradient(ellipse_44%_72%_at_65%_58%,black_0%,black_58%,transparent_78%)] [transform-style:preserve-3d] lg:block"
+        className="absolute -inset-3 hidden origin-[65%_56%] scale-[1.018] will-change-transform [mask-image:radial-gradient(ellipse_44%_72%_at_65%_58%,black_0%,black_58%,transparent_78%)] 2xl:[mask-image:radial-gradient(ellipse_60%_80%_at_65%_58%,black_0%,black_58%,transparent_85%)] 3xl:[mask-image:none] [transform-style:preserve-3d] lg:block"
       >
         <div className={`absolute inset-0 origin-[65%_78%] ${motionEnabled ? "hero-breathe" : ""}`}>
           <Image src="/images/hero-anime-bg.webp" alt="" fill quality={82} sizes="100vw" className={imageClass} />

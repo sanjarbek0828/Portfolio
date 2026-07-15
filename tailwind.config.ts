@@ -15,11 +15,11 @@ const config: Config = {
         sm: "1.5rem",
         lg: "2rem",
       },
-      screens: {
-        "2xl": "1280px",
-      },
     },
     extend: {
+      screens: {
+        "3xl": "1920px",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -103,6 +103,9 @@ const config: Config = {
     },
   },
   plugins: [],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
 };
 
 export default config;

@@ -6,6 +6,7 @@ import { ArrowUpRight, Menu, X, Lock, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/components/LanguageProvider";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -22,7 +23,7 @@ export function SiteHeader() {
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
       <nav
         aria-label="Primary navigation"
-        className="header-enter mx-auto flex h-16 max-w-7xl items-center justify-between rounded-full border border-white/[0.09] bg-[#050916]/75 px-3 text-white shadow-[0_12px_45px_rgba(0,0,0,0.45)] backdrop-blur-2xl backdrop-saturate-150 sm:px-5"
+        className="header-enter mx-auto flex h-16 w-full max-w-[1920px] items-center justify-between rounded-full border border-white/[0.09] bg-[#050916]/75 px-3 text-white shadow-[0_12px_45px_rgba(0,0,0,0.45)] backdrop-blur-2xl backdrop-saturate-150 sm:px-5"
       >
         <Link href="/" className="focus-ring group flex items-center gap-3 rounded-full">
           <span className="relative grid h-9 w-9 place-items-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.06] shadow-[0_0_24px_rgba(69,105,255,0.22)]">
@@ -76,27 +77,41 @@ export function SiteHeader() {
         </div>
       </nav>
 
-      {open ? (
-          <div className="mobile-menu-enter mx-auto mt-3 max-w-7xl overflow-hidden rounded-[1.75rem] border border-white/[0.09] bg-[#050916]/92 p-3 text-white shadow-[0_16px_48px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 lg:hidden">
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -15, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto mt-3 max-w-[1920px] overflow-hidden rounded-[1.75rem] border border-white/[0.09] bg-[#050916]/92 p-3 text-white shadow-[0_16px_48px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 lg:hidden origin-top"
+          >
             <div className="mb-2 px-2 xl:hidden"><LanguageSwitcher /></div>
             {navigation.map((item, index) => (
-              <Link
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.05 + index * 0.05, duration: 0.3 }}
                 key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="focus-ring flex items-center justify-between rounded-2xl px-5 py-4 text-lg font-semibold text-white transition hover:bg-white/[0.06]"
               >
-                <span>
-                  <span className="mr-4 font-mono text-[0.65rem] text-primary">
-                    0{index + 1}
+                <Link
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="focus-ring flex items-center justify-between rounded-2xl px-5 py-4 text-lg font-semibold text-white transition hover:bg-white/[0.06]"
+                >
+                  <span>
+                    <span className="mr-4 font-mono text-[0.65rem] text-primary">
+                      0{index + 1}
+                    </span>
+                    {item.label}
                   </span>
-                  {item.label}
-                </span>
-                <ArrowUpRight className="h-4 w-4 text-white/40" />
-              </Link>
+                  <ArrowUpRight className="h-4 w-4 text-white/40" />
+                </Link>
+              </motion.div>
             ))}
-          </div>
-      ) : null}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
