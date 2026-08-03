@@ -73,9 +73,9 @@ Loyiha Vercel platformasi uchun to'liq optimizatsiya qilingan.
 ## 👨‍💻 Muallif
 
 **Sanjarbek Otabekov**
-- GitHub: [@sanjarbek404](https://github.com/sanjarbek404)
+- GitHub: [@sanjarbek404](https://github.com/sanjarbek0828)
 - LinkedIn: [Sanjarbek Otabekov](https://www.linkedin.com/in/sanjarbek-otabekov-0600733bb/)
-- Telegram: [@sanjarbek_404](https://t.me/sanjarbek_404)
+- Telegram: [@sanjarbek_404](https://t.me/sanjarbekdev)
 - Veb-sayt: [sanjarme.uz](https://sanjarme.uz)
 
 ---
