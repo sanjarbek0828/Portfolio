@@ -241,7 +241,7 @@ export function Hero() {
                   fill
                   priority
                   sizes="(max-width: 640px) 84vw, (max-width: 1024px) 430px, 400px"
-                  className="object-cover object-[58%_center] transition duration-700 hover:scale-[1.025]"
+                  className="object-cover object-[58%_top] lg:object-[58%_15%] transition duration-700 hover:scale-[1.025]"
                 />
                 <div className="pointer-events-none absolute inset-0 rounded-[calc(2rem-9px)] ring-1 ring-inset ring-white/25" />
               </div>
